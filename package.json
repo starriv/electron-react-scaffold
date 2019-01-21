@@ -1,0 +1,111 @@
+{
+  "name": "electron-react-scaffold",
+  "version": "1.0.0",
+  "description": "A basic Electron + React scaffolding",
+  "main": "app/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "clean": "del app/ && del release/ && del dist/",
+    "dev": "npm run clean && concurrently \"npm run dev:main\" \"npm run dev:renderer\" \"babel-node ./scripts/electron-wait-react.js\"",
+    "dev:main": "webpack --mode=development --config conf/webpack/webpack.main.babel.js",
+    "dev:renderer": "cross-env PORT=3000 NODE_ENV=development webpack-dev-server --config conf/webpack/webpack.renderer.babel.js",
+    "build": "npm run clean && npm run build:main && npm run build:renderer",
+    "build:main": "webpack --config conf/webpack/webpack.main.babel.js",
+    "build:renderer": "webpack --config conf/webpack/webpack.renderer.babel.js",
+    "pack": "npm run clean && npm run build && build -mwl",
+    "pack:mac": "build --mac",
+    "pack:win": "build --win",
+    "pack:linux": "build --linux",
+    "format-code": "prettier --write ./src/**/**/**.js",
+    "eslint-check": "eslint --print-config . | eslint-config-prettier-check"
+  },
+  "author": {
+    "name": "Starriv",
+    "email": "starriv.993@gmail.com",
+    "url": "https://github.com/starriv"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-rc.3",
+    "@babel/plugin-transform-runtime": "^7.0.0-rc.3",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "@babel/runtime": "^7.0.0-rc.3",
+    "boxen": "^1.3.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "concurrently": "^4.0.1",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "del-cli": "^1.1.0",
+    "electron": "^2.0.0",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-router-dom": "^4.3.1"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.0.0",
+    "electron-builder": "^20.28.3",
+    "electron-devtools-installer": "^2.2.4",
+    "eslint": "^5.12.1",
+    "eslint-config-prettier": "^3.6.0",
+    "eslint-plugin-react": "^7.12.4",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^3.8.1",
+    "less-loader": "^4.1.0",
+    "mini-css-extract-plugin": "^0.4.2",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "prettier": "^1.16.0",
+    "script-ext-html-webpack-plugin": "^2.0.1",
+    "style-loader": "^0.23.0",
+    "uglifyjs-webpack-plugin": "^1.3.0",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": ">=3.1.11",
+    "webpack-node-externals": "^1.7.2",
+    "webpack-root": "^1.1.3"
+  },
+  "build": {
+    "productName": "Electron App",
+    "appId": "com.starriv.app",
+    "files": [
+      "app/",
+      "node_modules/",
+      "package.json"
+    ],
+    "asar": true,
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ]
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    }
+  }
+}
