@@ -6,9 +6,9 @@
   "scripts": {
     "start": "electron .",
     "clean": "del app/ && del release/ && del dist/",
-    "dev": "npm run clean && concurrently \"npm run dev:main\" \"npm run dev:renderer\" \"babel-node ./scripts/electron-wait-react.js\"",
-    "dev:main": "webpack --mode=development --config conf/webpack/webpack.main.babel.js",
-    "dev:renderer": "cross-env PORT=3000 NODE_ENV=development webpack-dev-server --config conf/webpack/webpack.renderer.babel.js",
+    "dev": "cross-env NODE_ENV=development npm run clean && concurrently \"npm run dev:main\" \"npm run dev:renderer\" \"babel-node ./scripts/electron-wait-react.js\"",
+    "dev:main": "cross-env NODE_ENV=development webpack --config conf/webpack/webpack.main.babel.js",
+    "dev:renderer": "cross-env NODE_ENV=development webpack-dev-server --config conf/webpack/webpack.renderer.babel.js",
     "build": "npm run clean && npm run build:main && npm run build:renderer",
     "build:main": "webpack --config conf/webpack/webpack.main.babel.js",
     "build:renderer": "webpack --config conf/webpack/webpack.renderer.babel.js",
@@ -44,6 +44,7 @@
     "electron": "^2.0.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
+    "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1"
   },
   "devDependencies": {

@@ -6,121 +6,117 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import CleanWebpackPlugin from 'clean-webpack-plugin'
 
-const sourcePath = path.join(__dirname, "../../src/renderer")
+const sourcePath = path.join(__dirname, '../../src/renderer')
 const outputPath = path.resolve(__dirname, '../../app/renderer')
 
 const devPort = process.env.PORT || 3000
-const isDev = process.env.NODE_ENV === 'development'
+const isDev =
+  process.env.NODE_ENV === 'development' ? 'development' : 'production'
 
 export default {
-    mode: 'production',
+  mode: isDev,
 
-    stats: {
-        colors: true
-    },
+  stats: {
+    colors: true,
+  },
 
-    context: sourcePath,
-    
-    entry: {
-        vendor: ['react'],
-        renderer: './app.js',
-    },
+  context: sourcePath,
 
-    output: {
-        path: outputPath,
-        filename: '[name].bundle.js',
-        chunkFilename: '[name].[chunkhash].bundle.js',
-        publicPath: isDev ? '/' : './',
-    },
+  entry: {
+    vendor: ['react'],
+    renderer: './app.js',
+  },
 
-    module: {
-        rules: [{
-                test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
-                use: ['babel-loader']
-            },
-            {
-                test: /\.(css|less)$/,
-                use: [
-                    'style-loader',
-                    {
-                        loader: "css-loader",
-                        options: {
-                            sourceMap: true,
-                            modules: true,
-                            localIdentName: "[local]___[hash:base64:5]"
-                        }
-                    },
-                    'less-loader'
-                ],
-                exclude: /node_modules/
-            }
-        ],
-    },
+  output: {
+    path: outputPath,
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].[chunkhash].bundle.js',
+    publicPath: isDev ? '/' : './',
+  },
 
-    resolve: {
-        extensions: [
-            '.js',
-            '.jsx',
-            '.css',
-            '.less'
-        ],
-        alias: {},
-    },
-
-    plugins: [
-        new CleanWebpackPlugin([outputPath]),
-
-        new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[id].css"
-        }),
-
-        new HtmlWebpackPlugin({
-            title: 'Electron React Scaffold ',
-            template: path.join(__dirname, '../../src/renderer/index.template.html')
-        }),
-
-        new ScriptExtHtmlWebpackPlugin({
-            defaultAttribute: 'defer'
-        }),
-
-    ],
-
-    externals(context, request, callback) {
-        let isExternal = false;
-        const load = ['electron'];
-        if (load.includes(request)) {
-          isExternal = `require("${request}")`;
-        }
-        callback(null, isExternal);
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: ['babel-loader'],
       },
-      
-    optimization: {
-        minimizer: [
-            new UglifyJsPlugin({
-                cache: true,
-                parallel: true,
-                sourceMap: true
-            }),
-            new OptimizeCSSAssetsPlugin({})
+      {
+        test: /\.(css|less)$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              modules: true,
+              localIdentName: '[local]___[hash:base64:5]',
+            },
+          },
+          'less-loader',
         ],
-        runtimeChunk: 'single',
-        splitChunks: {
-            cacheGroups: {
-                vendor: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    chunks: 'all',
-                    enforce: true
-                }
-            }
-        },
-    },
+        exclude: /node_modules/,
+      },
+    ],
+  },
 
-    devServer: {
-        contentBase: outputPath,
-        compress: true,
-        port: devPort
+  resolve: {
+    extensions: ['.js', '.jsx', '.css', '.less'],
+    alias: {},
+  },
+
+  plugins: [
+    new CleanWebpackPlugin([outputPath]),
+
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+
+    new HtmlWebpackPlugin({
+      title: 'Electron React Scaffold ',
+      template: path.join(__dirname, '../../src/renderer/index.template.html'),
+    }),
+
+    new ScriptExtHtmlWebpackPlugin({
+      defaultAttribute: 'defer',
+    }),
+  ],
+
+  externals(context, request, callback) {
+    let isExternal = false
+    const load = ['electron']
+    if (load.includes(request)) {
+      isExternal = `require("${request}")`
     }
+    callback(null, isExternal)
+  },
+
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true,
+      }),
+      new OptimizeCSSAssetsPlugin({}),
+    ],
+    runtimeChunk: 'single',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          enforce: true,
+        },
+      },
+    },
+  },
+
+  devServer: {
+    contentBase: outputPath,
+    compress: true,
+    port: devPort,
+  },
 }

@@ -10,21 +10,26 @@ let startedElectron = false
 
 // 检测 renderer 是否渲染
 const tryConnection = () => {
-    client.connect({
-        port
-    }, () => {
-        client.end()
-        if (!startedElectron) {
-            startedElectron = true
-            child.exec('npm start')
-            console.log(boxen('renderer process', {
-                padding: 1
-            }))
-        }
-    })
+  client.connect(
+    {
+      port,
+    },
+    () => {
+      client.end()
+      if (!startedElectron) {
+        startedElectron = true
+        child.exec('npm start')
+        console.log(
+          boxen('renderer process', {
+            padding: 1,
+          }),
+        )
+      }
+    },
+  )
 }
 
 tryConnection()
 client.on('error', () => {
-    setTimeout(tryConnection, 1000)
+  setTimeout(tryConnection, 1000)
 })
